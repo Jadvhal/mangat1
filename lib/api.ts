@@ -8,6 +8,10 @@ export interface ApiMangaItem {
   chapter: string;
   view: string;
   description: string;
+  author?: string;
+  status?: string;
+  type?: string;
+  genres?: string[];
 }
 
 export interface ApiMangaListResponse {
@@ -120,14 +124,27 @@ export async function fetchMangaList(params?: { page?: number; limit?: number; t
     
     const data = await res.json();
     
-    const mangaList: ApiMangaItem[] = data.data.map((manga: any) => ({
-      id: manga.id,
-      image: getCoverUrl(manga.id, manga.relationships),
-      title: manga.attributes.title.en || Object.values(manga.attributes.title)[0] || 'Unknown Title',
-      chapter: `Ch. ${manga.attributes.lastChapter || '?'}`,
-      view: 'N/A', // MangaDex doesn't provide views directly in this endpoint
-      description: manga.attributes.description?.en || 'No description available.'
-    }));
+    const mangaList: ApiMangaItem[] = data.data.map((manga: any) => {
+      const authorRel = manga.relationships?.find((rel: any) => rel.type === 'author');
+      const authorName = authorRel?.attributes?.name || 'Unknown Author';
+      
+      const genres = manga.attributes.tags
+        ?.filter((tag: any) => tag.attributes.group === 'genre')
+        .map((tag: any) => tag.attributes.name.en) || [];
+
+      return {
+        id: manga.id,
+        image: getCoverUrl(manga.id, manga.relationships),
+        title: manga.attributes.title.en || Object.values(manga.attributes.title)[0] || 'Unknown Title',
+        chapter: `Ch. ${manga.attributes.lastChapter || '?'}`,
+        view: 'N/A', // MangaDex doesn't provide views directly in this endpoint
+        description: manga.attributes.description?.en || 'No description available.',
+        author: authorName,
+        status: manga.attributes.status || 'Unknown',
+        type: manga.attributes.publicationDemographic || 'Manga',
+        genres: genres
+      };
+    });
 
     return {
       mangaList,
@@ -266,14 +283,27 @@ export async function searchManga(query: string, page: number = 1): Promise<{ ma
     
     const data = await res.json();
     
-    const mangaList: ApiMangaItem[] = data.data.map((manga: any) => ({
-      id: manga.id,
-      image: getCoverUrl(manga.id, manga.relationships),
-      title: manga.attributes.title.en || Object.values(manga.attributes.title)[0] || 'Unknown Title',
-      chapter: `Ch. ${manga.attributes.lastChapter || '?'}`,
-      view: 'N/A',
-      description: manga.attributes.description?.en || 'No description available.'
-    }));
+    const mangaList: ApiMangaItem[] = data.data.map((manga: any) => {
+      const authorRel = manga.relationships?.find((rel: any) => rel.type === 'author');
+      const authorName = authorRel?.attributes?.name || 'Unknown Author';
+      
+      const genres = manga.attributes.tags
+        ?.filter((tag: any) => tag.attributes.group === 'genre')
+        .map((tag: any) => tag.attributes.name.en) || [];
+
+      return {
+        id: manga.id,
+        image: getCoverUrl(manga.id, manga.relationships),
+        title: manga.attributes.title.en || Object.values(manga.attributes.title)[0] || 'Unknown Title',
+        chapter: `Ch. ${manga.attributes.lastChapter || '?'}`,
+        view: 'N/A',
+        description: manga.attributes.description?.en || 'No description available.',
+        author: authorName,
+        status: manga.attributes.status || 'Unknown',
+        type: manga.attributes.publicationDemographic || 'Manga',
+        genres: genres
+      };
+    });
 
     return {
       mangaList,
