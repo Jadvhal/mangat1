@@ -3,6 +3,7 @@
 import { Search } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useState, FormEvent, Suspense } from 'react';
+import { useSidebar } from './sidebar-context';
 
 function SearchInput() {
   const router = useRouter();
@@ -34,8 +35,15 @@ function SearchInput() {
 }
 
 export function Topbar() {
+  const { isCollapsed } = useSidebar();
+
   return (
-    <header className="h-14 bg-[#0a0a0a] flex items-center justify-end px-6 sticky top-0 z-10">
+    <header className="h-14 bg-[#0a0a0a] flex items-center justify-between px-6 sticky top-0 z-10">
+      <div className="flex items-center">
+        {isCollapsed && (
+          <span className="font-medium text-zinc-400 text-sm">Manga</span>
+        )}
+      </div>
       <Suspense fallback={<div className="w-96 h-8 bg-[#141414] rounded-lg animate-pulse" />}>
         <SearchInput />
       </Suspense>
