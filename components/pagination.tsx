@@ -11,11 +11,31 @@ function PaginationInner({ currentPage, totalPages }: { currentPage: number, tot
 
   if (totalPages <= 1) return null;
 
-  const createPageUrl = (page: number) => {
+  const createPageUrl = (pageNumber: number | string) => {
     const params = new URLSearchParams(searchParams.toString());
-    params.set('page', page.toString());
+    params.set('page', pageNumber.toString());
     return `${pathname}?${params.toString()}`;
   };
+
+  const getPages = () => {
+    const pages = [];
+    if (totalPages <= 5) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        pages.push(1, 2, 3, 4, '...', totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1, '...', totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+      } else {
+        pages.push(1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages);
+      }
+    }
+    return pages;
+  };
+
+  const pages = getPages();
 
   return (
     <div className="flex justify-center items-center gap-2 mt-8">
@@ -32,43 +52,23 @@ function PaginationInner({ currentPage, totalPages }: { currentPage: number, tot
       )}
       
       <div className="flex items-center gap-2">
-        <Link href={createPageUrl(1)} className={`w-8 h-8 flex items-center justify-center rounded text-sm font-medium transition-colors ${currentPage === 1 ? 'bg-white text-black' : 'border border-white/10 text-zinc-400 hover:bg-white/5 hover:text-white'}`}>
-          1
-        </Link>
-        
-        {currentPage > 3 && <span className="text-zinc-500">...</span>}
-        
-        {currentPage > 2 && (
-          <Link href={createPageUrl(currentPage - 1)} className="w-8 h-8 flex items-center justify-center rounded border border-white/10 text-zinc-400 hover:bg-white/5 hover:text-white text-sm font-medium transition-colors">
-            {currentPage - 1}
-          </Link>
-        )}
-        
-        {currentPage !== 1 && currentPage !== totalPages && (
-          <button className="w-8 h-8 flex items-center justify-center rounded bg-white text-black text-sm font-medium">
-            {currentPage}
-          </button>
-        )}
-        
-        {currentPage === 1 && totalPages > 1 && (
-          <Link href={createPageUrl(2)} className="w-8 h-8 flex items-center justify-center rounded border border-white/10 text-zinc-400 hover:bg-white/5 hover:text-white text-sm font-medium transition-colors">
-            2
-          </Link>
-        )}
-        
-        {currentPage < totalPages - 1 && (
-          <Link href={createPageUrl(currentPage + 1)} className="w-8 h-8 flex items-center justify-center rounded border border-white/10 text-zinc-400 hover:bg-white/5 hover:text-white text-sm font-medium transition-colors">
-            {currentPage + 1}
-          </Link>
-        )}
-        
-        {currentPage < totalPages - 2 && <span className="text-zinc-500">...</span>}
-        
-        {totalPages > 1 && (
-          <Link href={createPageUrl(totalPages)} className={`w-auto px-2 min-w-[2rem] h-8 flex items-center justify-center rounded text-sm font-medium transition-colors ${currentPage === totalPages ? 'bg-white text-black' : 'border border-white/10 text-zinc-400 hover:bg-white/5 hover:text-white'}`}>
-            {totalPages}
-          </Link>
-        )}
+        {pages.map((page, index) => {
+          if (page === '...') {
+            return <span key={`ellipsis-${index}`} className="text-zinc-500 px-1">...</span>;
+          }
+          
+          const isCurrent = page === currentPage;
+          
+          return (
+            <Link 
+              key={`page-${page}`} 
+              href={createPageUrl(page)} 
+              className={`min-w-[2rem] px-2 h-8 flex items-center justify-center rounded text-sm font-medium transition-colors ${isCurrent ? 'bg-white text-black' : 'border border-white/10 text-zinc-400 hover:bg-white/5 hover:text-white'}`}
+            >
+              {page}
+            </Link>
+          );
+        })}
       </div>
 
       {currentPage < totalPages ? (
@@ -88,7 +88,7 @@ function PaginationInner({ currentPage, totalPages }: { currentPage: number, tot
 
 export function Pagination({ currentPage, totalPages }: { currentPage: number, totalPages: number }) {
   return (
-    <Suspense fallback={<div className="h-10 mt-8"></div>}>
+    <Suspense fallback={<div className="flex justify-center items-center gap-2 mt-8 h-10" />}>
       <PaginationInner currentPage={currentPage} totalPages={totalPages} />
     </Suspense>
   );
