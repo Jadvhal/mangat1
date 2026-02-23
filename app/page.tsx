@@ -13,7 +13,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
 
   const [popularRes, latestRes] = await Promise.all([
     fetchMangaList({ type: 'topview', limit: 24 }),
-    fetchMangaList({ type: 'newest', page: currentPage, limit: 24 })
+    fetchMangaList({ type: 'newest', page: currentPage, limit: 36 })
   ]);
 
   const popular = popularRes.mangaList;
@@ -27,22 +27,17 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
       </section>
 
       <section>
-        <h2 className="text-2xl font-bold mb-4">Recently Viewed</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-          {latest.slice(0, 6).map((manga) => (
-            <Link href={`/manga/${manga.id}`} key={`recent-${manga.id}`} className="group relative aspect-[2/3] rounded-xl overflow-hidden border border-white/5 hover:border-white/20 transition-colors">
-              <Image src={manga.image} alt={manga.title} fill className="object-cover group-hover:scale-105 transition-transform duration-300" referrerPolicy="no-referrer" />
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      <section>
-        <h2 className="text-2xl font-bold mb-4">Latest Releases</h2>
+        <h2 className="text-2xl font-bold mb-4">All Manga List</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
           {latest.map((manga) => (
-            <Link href={`/manga/${manga.id}`} key={manga.id} className="group relative aspect-[2/3] rounded-xl overflow-hidden border border-white/5 hover:border-white/20 transition-colors">
-              <Image src={manga.image} alt={manga.title} fill className="object-cover group-hover:scale-105 transition-transform duration-300" referrerPolicy="no-referrer" />
+            <Link href={`/manga/${manga.id}`} key={manga.id} className="group flex flex-col gap-2">
+              <div className="relative aspect-[2/3] rounded-xl overflow-hidden border border-white/5 hover:border-white/20 transition-colors">
+                <Image src={manga.image} alt={manga.title} fill className="object-cover group-hover:scale-105 transition-transform duration-300" referrerPolicy="no-referrer" />
+              </div>
+              <div>
+                <h3 className="font-medium text-sm text-white line-clamp-1 group-hover:text-purple-400 transition-colors">{manga.title}</h3>
+                <p className="text-xs text-zinc-500">{manga.chapter}</p>
+              </div>
             </Link>
           ))}
         </div>

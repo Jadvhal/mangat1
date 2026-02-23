@@ -101,10 +101,10 @@ export default async function MangaDetail({ params }: { params: Promise<{ id: st
         {/* Right: Synopsis */}
         <div className="w-full lg:w-[400px] xl:w-[500px] flex-shrink-0">
           <div className="bg-[#141414] border border-white/5 rounded-xl p-6 h-full">
-            <p className="text-zinc-300 text-sm leading-relaxed">
-              {/* The API doesn't return a synopsis in the detail endpoint based on docs, so we'll leave this empty or add a placeholder */}
-              No synopsis available.
-            </p>
+            <h3 className="text-xl font-bold mb-4 text-white">Synopsis</h3>
+            <div className="text-zinc-300 text-sm leading-relaxed whitespace-pre-wrap">
+              {manga.description}
+            </div>
           </div>
         </div>
       </div>

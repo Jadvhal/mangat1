@@ -33,6 +33,7 @@ export interface ApiMangaDetail {
   updated: string;
   view: string;
   genres: string[];
+  description: string;
   chapterList: {
     id: string;
     path: string;
@@ -150,7 +151,7 @@ export async function fetchMangaList(params?: { page?: number; limit?: number; t
       mangaList,
       metaData: {
         totalStories: data.total,
-        totalPages: Math.ceil(data.total / limit),
+        totalPages: Math.min(Math.ceil(data.total / limit), Math.floor(10000 / limit)),
         type: [{ id: "newest", type: "Newest" }, { id: "topview", type: "Top View" }],
         state: [],
         category: []
@@ -200,6 +201,7 @@ export async function fetchMangaDetail(id: string): Promise<ApiMangaDetail> {
       updated: manga.attributes.updatedAt ? new Date(manga.attributes.updatedAt).toLocaleDateString() : 'Unknown',
       view: 'N/A',
       genres: genres,
+      description: manga.attributes.description?.en || 'No synopsis available.',
       chapterList: feedData.data.map((ch: any) => ({
         id: ch.id,
         path: `/manga/${id}/chapter/${ch.id}`,
@@ -265,7 +267,7 @@ export async function fetchChapterDetail(mangaId: string, chapterId: string): Pr
 
 export async function searchManga(query: string, page: number = 1): Promise<{ mangaList: ApiMangaItem[], metaData: { totalPages: number } }> {
   try {
-    const limit = 12;
+    const limit = 36;
     const offset = (page - 1) * limit;
     
     const url = new URL(`${API_BASE_URL}/manga`);
@@ -308,7 +310,7 @@ export async function searchManga(query: string, page: number = 1): Promise<{ ma
     return {
       mangaList,
       metaData: {
-        totalPages: Math.ceil(data.total / limit)
+        totalPages: Math.min(Math.ceil(data.total / limit), Math.floor(10000 / limit))
       }
     };
   } catch (error) {
