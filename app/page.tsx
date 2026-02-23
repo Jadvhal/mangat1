@@ -5,14 +5,18 @@ import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
-export default async function Home() {
+export default async function Home({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
+  const resolvedSearchParams = await searchParams;
+  const pageParam = resolvedSearchParams.page;
+  const currentPage = typeof pageParam === 'string' ? parseInt(pageParam, 10) : 1;
+
   const [popularRes, latestRes] = await Promise.all([
-    fetchMangaList({ type: 'topview' }),
-    fetchMangaList({ type: 'newest' })
+    fetchMangaList({ type: 'topview', page: currentPage, limit: 2 }),
+    fetchMangaList({ type: 'newest', limit: 12 })
   ]);
 
-  const popular = popularRes.mangaList.slice(0, 2);
-  const latest = latestRes.mangaList.slice(0, 12);
+  const popular = popularRes.mangaList;
+  const latest = latestRes.mangaList;
 
   return (
     <div className="space-y-8">
@@ -46,13 +50,25 @@ export default async function Home() {
           ))}
         </div>
         <div className="flex justify-end mt-4 gap-2">
-          <div className="text-sm text-zinc-500 flex items-center mr-2">1 / {popularRes.metaData.totalPages}</div>
-          <button className="p-2 bg-white text-black rounded-lg hover:bg-zinc-200 transition-colors">
-            <ArrowLeft className="w-4 h-4" />
-          </button>
-          <button className="p-2 bg-white text-black rounded-lg hover:bg-zinc-200 transition-colors">
-            <ArrowRight className="w-4 h-4" />
-          </button>
+          <div className="text-sm text-zinc-500 flex items-center mr-2">{currentPage} / {popularRes.metaData.totalPages}</div>
+          {currentPage > 1 ? (
+            <Link href={`/?page=${currentPage - 1}`} className="p-2 bg-white text-black rounded-lg hover:bg-zinc-200 transition-colors">
+              <ArrowLeft className="w-4 h-4" />
+            </Link>
+          ) : (
+            <button disabled className="p-2 bg-zinc-800 text-zinc-500 rounded-lg cursor-not-allowed">
+              <ArrowLeft className="w-4 h-4" />
+            </button>
+          )}
+          {currentPage < popularRes.metaData.totalPages ? (
+            <Link href={`/?page=${currentPage + 1}`} className="p-2 bg-white text-black rounded-lg hover:bg-zinc-200 transition-colors">
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          ) : (
+            <button disabled className="p-2 bg-zinc-800 text-zinc-500 rounded-lg cursor-not-allowed">
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          )}
         </div>
       </section>
 

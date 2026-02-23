@@ -90,9 +90,9 @@ function getOriginalCoverUrl(mangaId: string, relationships: any[]): string {
   return 'https://picsum.photos/seed/fallback/400/600';
 }
 
-export async function fetchMangaList(params?: { page?: number; type?: string; category?: string; state?: string }): Promise<ApiMangaListResponse> {
+export async function fetchMangaList(params?: { page?: number; limit?: number; type?: string; category?: string; state?: string }): Promise<ApiMangaListResponse> {
   try {
-    const limit = 12;
+    const limit = params?.limit || 12;
     const offset = params?.page ? (params.page - 1) * limit : 0;
     
     const url = new URL(`${API_BASE_URL}/manga`);
