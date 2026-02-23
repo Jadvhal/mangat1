@@ -1,0 +1,5 @@
+{
+  "name": "Manga Reader",
+  "description": "A dark-themed manga web app reader with bookmarks, genres, and author pages.",
+  "requestFramePermissions": []
+}
