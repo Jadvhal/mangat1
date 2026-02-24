@@ -33,7 +33,6 @@ export interface ApiMangaDetail {
   updated: string;
   view: string;
   genres: string[];
-  description: string;
   chapterList: {
     id: string;
     path: string;
@@ -95,7 +94,7 @@ function getOriginalCoverUrl(mangaId: string, relationships: any[]): string {
   return 'https://picsum.photos/seed/fallback/400/600';
 }
 
-export async function fetchMangaList(params?: { page?: number; limit?: number; type?: string; category?: string; state?: string }): Promise<ApiMangaListResponse> {
+export async function fetchMangaList(params?: { page?: number; limit?: number; type?: string; category?: string; state?: string; demographic?: string }): Promise<ApiMangaListResponse> {
   try {
     const limit = params?.limit || 12;
     const offset = params?.page ? (params.page - 1) * limit : 0;
@@ -107,6 +106,10 @@ export async function fetchMangaList(params?: { page?: number; limit?: number; t
     url.searchParams.append('includes[]', 'author');
     url.searchParams.append('hasAvailableChapters', 'true');
     url.searchParams.append('availableTranslatedLanguage[]', 'en');
+    
+    if (params?.demographic) {
+      url.searchParams.append('publicationDemographic[]', params.demographic);
+    }
     
     // Default sorting
     if (params?.type === 'topview') {
@@ -201,7 +204,6 @@ export async function fetchMangaDetail(id: string): Promise<ApiMangaDetail> {
       updated: manga.attributes.updatedAt ? new Date(manga.attributes.updatedAt).toLocaleDateString() : 'Unknown',
       view: 'N/A',
       genres: genres,
-      description: manga.attributes.description?.en || 'No synopsis available.',
       chapterList: feedData.data.map((ch: any) => ({
         id: ch.id,
         path: `/manga/${id}/chapter/${ch.id}`,
@@ -267,7 +269,7 @@ export async function fetchChapterDetail(mangaId: string, chapterId: string): Pr
 
 export async function searchManga(query: string, page: number = 1): Promise<{ mangaList: ApiMangaItem[], metaData: { totalPages: number } }> {
   try {
-    const limit = 36;
+    const limit = 12;
     const offset = (page - 1) * limit;
     
     const url = new URL(`${API_BASE_URL}/manga`);

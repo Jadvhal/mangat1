@@ -2,9 +2,10 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Bookmark, TrendingUp, Search, Users, Drama, Mountain, OctagonAlert, Settings, User, ChevronRight, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { Home, Bookmark, TrendingUp, Search, Users, Drama, Mountain, OctagonAlert, Settings, User, ChevronRight, ChevronDown, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useSidebar } from './sidebar-context';
+import { useState } from 'react';
 
 const navItems = [
   { icon: Home, href: '/', label: 'Home' },
@@ -14,7 +15,17 @@ const navItems = [
 ];
 
 const categoryItems = [
-  { icon: Users, href: '/demographics', label: 'Demographics' },
+  { 
+    icon: Users, 
+    href: '/demographics', 
+    label: 'Demographics',
+    submenu: [
+      { label: 'Josei', href: '/demographics/josei' },
+      { label: 'Seinen', href: '/demographics/seinen' },
+      { label: 'Shoujo', href: '/demographics/shoujo' },
+      { label: 'Shounen', href: '/demographics/shounen' },
+    ]
+  },
   { icon: Drama, href: '/genres', label: 'Genres' },
   { icon: Mountain, href: '/themes', label: 'Themes' },
   { icon: OctagonAlert, href: '/mature', label: 'Mature' },
@@ -23,6 +34,14 @@ const categoryItems = [
 export function Sidebar() {
   const pathname = usePathname();
   const { isCollapsed, setIsCollapsed } = useSidebar();
+  const [expandedMenus, setExpandedMenus] = useState<Record<string, boolean>>({
+    '/demographics': true
+  });
+
+  const toggleMenu = (href: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    setExpandedMenus(prev => ({ ...prev, [href]: !prev[href] }));
+  };
 
   return (
     <aside className={cn(
@@ -76,26 +95,78 @@ export function Sidebar() {
 
         <nav className="flex flex-col px-3 gap-0.5">
           {categoryItems.map((item) => {
+            const isSubActive = item.submenu?.some(sub => pathname === sub.href);
             const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
+            const isExpanded = expandedMenus[item.href];
+            
             return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "flex items-center rounded-lg transition-colors text-sm font-medium group",
-                  isCollapsed ? "justify-center py-3 px-0" : "gap-3 px-3 py-2",
-                  isActive ? "text-white bg-white/10" : "text-zinc-400 hover:text-white hover:bg-white/5"
+              <div key={item.href} className="flex flex-col">
+                {item.submenu ? (
+                  <button
+                    onClick={(e) => {
+                      if (isCollapsed) setIsCollapsed(false);
+                      toggleMenu(item.href, e);
+                    }}
+                    className={cn(
+                      "flex items-center rounded-lg transition-colors text-sm font-medium group w-full",
+                      isCollapsed ? "justify-center py-3 px-0" : "gap-3 px-3 py-2",
+                      isActive && !isExpanded ? "text-white bg-white/10" : "text-zinc-400 hover:text-white hover:bg-white/5",
+                      isActive && isExpanded ? "text-white hover:bg-white/5" : ""
+                    )}
+                    title={isCollapsed ? item.label : undefined}
+                  >
+                    <item.icon className={cn("w-5 h-5 flex-shrink-0", isSubActive && isCollapsed ? "text-white" : "")} />
+                    {!isCollapsed && (
+                      <>
+                        <span className={cn("flex-1 text-left whitespace-nowrap", isSubActive && isCollapsed ? "text-white" : "")}>{item.label}</span>
+                        {isExpanded ? (
+                          <ChevronDown className="w-4 h-4 text-zinc-600 group-hover:text-zinc-400 transition-colors flex-shrink-0" />
+                        ) : (
+                          <ChevronRight className="w-4 h-4 text-zinc-600 group-hover:text-zinc-400 transition-colors flex-shrink-0" />
+                        )}
+                      </>
+                    )}
+                  </button>
+                ) : (
+                  <Link
+                    href={item.href}
+                    className={cn(
+                      "flex items-center rounded-lg transition-colors text-sm font-medium group",
+                      isCollapsed ? "justify-center py-3 px-0" : "gap-3 px-3 py-2",
+                      isActive ? "text-white bg-white/10" : "text-zinc-400 hover:text-white hover:bg-white/5"
+                    )}
+                    title={isCollapsed ? item.label : undefined}
+                  >
+                    <item.icon className="w-5 h-5 flex-shrink-0" />
+                    {!isCollapsed && (
+                      <>
+                        <span className="flex-1 whitespace-nowrap">{item.label}</span>
+                        <ChevronRight className="w-4 h-4 text-zinc-600 group-hover:text-zinc-400 transition-colors flex-shrink-0" />
+                      </>
+                    )}
+                  </Link>
                 )}
-                title={isCollapsed ? item.label : undefined}
-              >
-                <item.icon className="w-5 h-5 flex-shrink-0" />
-                {!isCollapsed && (
-                  <>
-                    <span className="flex-1 whitespace-nowrap">{item.label}</span>
-                    <ChevronRight className="w-4 h-4 text-zinc-600 group-hover:text-zinc-400 transition-colors flex-shrink-0" />
-                  </>
+                
+                {item.submenu && isExpanded && !isCollapsed && (
+                  <div className="ml-[21px] pl-4 mt-1 border-l border-white/10 flex flex-col gap-1">
+                    {item.submenu.map(subItem => {
+                      const isSubItemActive = pathname === subItem.href;
+                      return (
+                        <Link
+                          key={subItem.href}
+                          href={subItem.href}
+                          className={cn(
+                            "px-3 py-1.5 rounded-lg transition-colors text-sm font-medium whitespace-nowrap",
+                            isSubItemActive ? "text-white bg-white/10" : "text-zinc-400 hover:text-white hover:bg-white/5"
+                          )}
+                        >
+                          {subItem.label}
+                        </Link>
+                      );
+                    })}
+                  </div>
                 )}
-              </Link>
+              </div>
             );
           })}
         </nav>
