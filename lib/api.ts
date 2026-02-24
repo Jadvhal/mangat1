@@ -33,6 +33,7 @@ export interface ApiMangaDetail {
   updated: string;
   view: string;
   genres: string[];
+  description: string;
   chapterList: {
     id: string;
     path: string;
@@ -94,7 +95,26 @@ function getOriginalCoverUrl(mangaId: string, relationships: any[]): string {
   return 'https://picsum.photos/seed/fallback/400/600';
 }
 
-export async function fetchMangaList(params?: { page?: number; limit?: number; type?: string; category?: string; state?: string; demographic?: string }): Promise<ApiMangaListResponse> {
+let tagsCache: any[] | null = null;
+
+async function getTagId(tagName: string): Promise<string | null> {
+  if (!tagsCache) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/manga/tag`);
+      if (res.ok) {
+        const data = await res.json();
+        tagsCache = data.data;
+      }
+    } catch (e) {
+      console.error('Failed to fetch tags', e);
+    }
+  }
+  if (!tagsCache) return null;
+  const tag = tagsCache.find((t: any) => t.attributes.name.en.toLowerCase() === tagName.toLowerCase());
+  return tag ? tag.id : null;
+}
+
+export async function fetchMangaList(params?: { page?: number; limit?: number; type?: string; category?: string; state?: string; demographic?: string; genre?: string }): Promise<ApiMangaListResponse> {
   try {
     const limit = params?.limit || 12;
     const offset = params?.page ? (params.page - 1) * limit : 0;
@@ -109,6 +129,13 @@ export async function fetchMangaList(params?: { page?: number; limit?: number; t
     
     if (params?.demographic) {
       url.searchParams.append('publicationDemographic[]', params.demographic);
+    }
+
+    if (params?.genre) {
+      const tagId = await getTagId(params.genre);
+      if (tagId) {
+        url.searchParams.append('includedTags[]', tagId);
+      }
     }
     
     // Default sorting
@@ -204,6 +231,7 @@ export async function fetchMangaDetail(id: string): Promise<ApiMangaDetail> {
       updated: manga.attributes.updatedAt ? new Date(manga.attributes.updatedAt).toLocaleDateString() : 'Unknown',
       view: 'N/A',
       genres: genres,
+      description: manga.attributes.description?.en || 'No description available.',
       chapterList: feedData.data.map((ch: any) => ({
         id: ch.id,
         path: `/manga/${id}/chapter/${ch.id}`,

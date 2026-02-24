@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { ApiMangaItem } from '@/lib/api';
+import type { ApiMangaItem } from '@/lib/api';
 
 export function PopularCarousel({ mangaList }: { mangaList: ApiMangaItem[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);

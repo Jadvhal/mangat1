@@ -26,7 +26,23 @@ const categoryItems = [
       { label: 'Shounen', href: '/demographics/shounen' },
     ]
   },
-  { icon: Drama, href: '/genres', label: 'Genres' },
+  { 
+    icon: Drama, 
+    href: '/genres', 
+    label: 'Genres',
+    submenu: [
+      { label: 'Action', href: '/genres/action' },
+      { label: 'Adventure', href: '/genres/adventure' },
+      { label: 'Comedy', href: '/genres/comedy' },
+      { label: 'Drama', href: '/genres/drama' },
+      { label: 'Fantasy', href: '/genres/fantasy' },
+      { label: 'Isekai', href: '/genres/isekai' },
+      { label: 'Romance', href: '/genres/romance' },
+      { label: 'Slice of Life', href: '/genres/slice%20of%20life' },
+      { label: 'Sports', href: '/genres/sports' },
+      { label: 'Thriller', href: '/genres/thriller' },
+    ]
+  },
   { icon: Mountain, href: '/themes', label: 'Themes' },
   { icon: OctagonAlert, href: '/mature', label: 'Mature' },
 ];
