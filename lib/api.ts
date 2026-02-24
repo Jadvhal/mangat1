@@ -114,7 +114,7 @@ async function getTagId(tagName: string): Promise<string | null> {
   return tag ? tag.id : null;
 }
 
-export async function fetchMangaList(params?: { page?: number; limit?: number; type?: string; category?: string; state?: string; demographic?: string; genre?: string; theme?: string; mature?: string }): Promise<ApiMangaListResponse> {
+export async function fetchMangaList(params?: { page?: number; limit?: number; type?: string; category?: string; state?: string; demographic?: string; genre?: string; theme?: string; mature?: string; time?: string }): Promise<ApiMangaListResponse> {
   try {
     const limit = params?.limit || 12;
     const offset = params?.page ? (params.page - 1) * limit : 0;
@@ -155,6 +155,19 @@ export async function fetchMangaList(params?: { page?: number; limit?: number; t
     } else {
       url.searchParams.append('contentRating[]', 'safe');
       url.searchParams.append('contentRating[]', 'suggestive');
+    }
+
+    if (params?.time) {
+      const date = new Date();
+      switch (params.time) {
+        case '24h': date.setDate(date.getDate() - 1); break;
+        case '7d': date.setDate(date.getDate() - 7); break;
+        case '30d': date.setDate(date.getDate() - 30); break;
+        case '3m': date.setMonth(date.getMonth() - 3); break;
+        case '6m': date.setMonth(date.getMonth() - 6); break;
+        case '1y': date.setFullYear(date.getFullYear() - 1); break;
+      }
+      url.searchParams.append('createdAtSince', date.toISOString().split('.')[0]);
     }
     
     // Default sorting
