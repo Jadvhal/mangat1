@@ -114,7 +114,7 @@ async function getTagId(tagName: string): Promise<string | null> {
   return tag ? tag.id : null;
 }
 
-export async function fetchMangaList(params?: { page?: number; limit?: number; type?: string; category?: string; state?: string; demographic?: string; genre?: string }): Promise<ApiMangaListResponse> {
+export async function fetchMangaList(params?: { page?: number; limit?: number; type?: string; category?: string; state?: string; demographic?: string; genre?: string; theme?: string; mature?: string }): Promise<ApiMangaListResponse> {
   try {
     const limit = params?.limit || 12;
     const offset = params?.page ? (params.page - 1) * limit : 0;
@@ -136,6 +136,25 @@ export async function fetchMangaList(params?: { page?: number; limit?: number; t
       if (tagId) {
         url.searchParams.append('includedTags[]', tagId);
       }
+    }
+
+    if (params?.theme) {
+      const tagId = await getTagId(params.theme);
+      if (tagId) {
+        url.searchParams.append('includedTags[]', tagId);
+      }
+    }
+
+    if (params?.mature) {
+      url.searchParams.append('contentRating[]', 'erotica');
+      url.searchParams.append('contentRating[]', 'pornographic');
+      const tagId = await getTagId(params.mature);
+      if (tagId) {
+        url.searchParams.append('includedTags[]', tagId);
+      }
+    } else {
+      url.searchParams.append('contentRating[]', 'safe');
+      url.searchParams.append('contentRating[]', 'suggestive');
     }
     
     // Default sorting

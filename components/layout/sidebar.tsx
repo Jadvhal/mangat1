@@ -43,8 +43,38 @@ const categoryItems = [
       { label: 'Thriller', href: '/genres/thriller' },
     ]
   },
-  { icon: Mountain, href: '/themes', label: 'Themes' },
-  { icon: OctagonAlert, href: '/mature', label: 'Mature' },
+  { 
+    icon: Mountain, 
+    href: '/themes', 
+    label: 'Themes',
+    submenu: [
+      { label: 'Doujinshi', href: '/themes/doujinshi' },
+      { label: 'Ecchi', href: '/themes/ecchi' },
+      { label: 'Gender Bender', href: '/themes/gender%20bender' },
+      { label: 'Harem', href: '/themes/harem' },
+      { label: 'Historical', href: '/themes/historical' },
+      { label: 'Horror', href: '/themes/horror' },
+      { label: 'Martial Arts', href: '/themes/martial%20arts' },
+      { label: 'Mecha', href: '/themes/mecha' },
+      { label: 'Mystery', href: '/themes/mystery' },
+      { label: 'Other', href: '/themes/other' },
+      { label: 'Psychological', href: '/themes/psychological' },
+      { label: 'School Life', href: '/themes/school%20life' },
+    ]
+  },
+  { 
+    icon: OctagonAlert, 
+    href: '/mature', 
+    label: 'Mature',
+    submenu: [
+      { label: 'Adult', href: '/mature/adult' },
+      { label: 'Hentai', href: '/mature/hentai' },
+      { label: 'Mature', href: '/mature/mature' },
+      { label: 'Shoujo Ai', href: '/mature/shoujo%20ai' },
+      { label: 'Shounen Ai', href: '/mature/shounen%20ai' },
+      { label: 'Smut', href: '/mature/smut' },
+    ]
+  },
 ];
 
 export function Sidebar() {
