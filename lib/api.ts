@@ -114,7 +114,21 @@ async function getTagId(tagName: string): Promise<string | null> {
   return tag ? tag.id : null;
 }
 
-export async function fetchMangaList(params?: { page?: number; limit?: number; type?: string; category?: string; state?: string; demographic?: string; genre?: string; theme?: string; mature?: string; time?: string }): Promise<ApiMangaListResponse> {
+export async function fetchMangaList(params?: { 
+  page?: number; 
+  limit?: number; 
+  type?: string; 
+  category?: string; 
+  state?: string; 
+  demographic?: string; 
+  genre?: string; 
+  theme?: string; 
+  mature?: string; 
+  time?: string;
+  title?: string;
+  origin?: string;
+  sort?: string;
+}): Promise<ApiMangaListResponse> {
   try {
     const limit = params?.limit || 12;
     const offset = params?.page ? (params.page - 1) * limit : 0;
@@ -127,34 +141,56 @@ export async function fetchMangaList(params?: { page?: number; limit?: number; t
     url.searchParams.append('hasAvailableChapters', 'true');
     url.searchParams.append('availableTranslatedLanguage[]', 'en');
     
-    if (params?.demographic) {
-      url.searchParams.append('publicationDemographic[]', params.demographic);
+    if (params?.title) {
+      url.searchParams.append('title', params.title);
     }
 
+    if (params?.demographic) {
+      params.demographic.split(',').forEach(d => {
+        url.searchParams.append('publicationDemographic[]', d.trim().toLowerCase());
+      });
+    }
+
+    const includedTags: string[] = [];
+    
     if (params?.genre) {
-      const tagId = await getTagId(params.genre);
-      if (tagId) {
-        url.searchParams.append('includedTags[]', tagId);
+      for (const g of params.genre.split(',')) {
+        const tagId = await getTagId(g.trim());
+        if (tagId) includedTags.push(tagId);
       }
     }
 
     if (params?.theme) {
-      const tagId = await getTagId(params.theme);
-      if (tagId) {
-        url.searchParams.append('includedTags[]', tagId);
+      for (const t of params.theme.split(',')) {
+        const tagId = await getTagId(t.trim());
+        if (tagId) includedTags.push(tagId);
       }
     }
 
     if (params?.mature) {
       url.searchParams.append('contentRating[]', 'erotica');
       url.searchParams.append('contentRating[]', 'pornographic');
-      const tagId = await getTagId(params.mature);
-      if (tagId) {
-        url.searchParams.append('includedTags[]', tagId);
+      for (const m of params.mature.split(',')) {
+        const tagId = await getTagId(m.trim());
+        if (tagId) includedTags.push(tagId);
       }
     } else {
       url.searchParams.append('contentRating[]', 'safe');
       url.searchParams.append('contentRating[]', 'suggestive');
+    }
+
+    includedTags.forEach(id => {
+      url.searchParams.append('includedTags[]', id);
+    });
+
+    if (params?.origin) {
+      const origins = params.origin.split(',').map(o => o.trim().toLowerCase());
+      if (origins.includes('manga')) url.searchParams.append('originalLanguage[]', 'ja');
+      if (origins.includes('manhwa')) url.searchParams.append('originalLanguage[]', 'ko');
+      if (origins.includes('manhua')) {
+        url.searchParams.append('originalLanguage[]', 'zh');
+        url.searchParams.append('originalLanguage[]', 'zh-hk');
+      }
     }
 
     if (params?.time) {
@@ -170,11 +206,16 @@ export async function fetchMangaList(params?: { page?: number; limit?: number; t
       url.searchParams.append('createdAtSince', date.toISOString().split('.')[0]);
     }
     
-    // Default sorting
-    if (params?.type === 'topview') {
+    // Sorting
+    const sort = params?.sort || params?.type;
+    if (sort === 'topview' || sort === 'popular') {
       url.searchParams.append('order[followedCount]', 'desc');
-    } else if (params?.type === 'newest') {
+    } else if (sort === 'newest' || sort === 'latest') {
       url.searchParams.append('order[latestUploadedChapter]', 'desc');
+    } else if (sort === 'rating') {
+      url.searchParams.append('order[rating]', 'desc');
+    } else if (sort === 'relevance' && params?.title) {
+      url.searchParams.append('order[relevance]', 'desc');
     } else {
       url.searchParams.append('order[followedCount]', 'desc');
     }

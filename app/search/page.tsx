@@ -1,7 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { searchManga } from '@/lib/api';
+import { fetchMangaList } from '@/lib/api';
 import { Pagination } from '@/components/pagination';
+import { SearchFilter } from '@/components/search-filter';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,14 +12,29 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
   const pageParam = resolvedSearchParams.page;
   const currentPage = typeof pageParam === 'string' ? parseInt(pageParam, 10) : 1;
 
-  const { mangaList, metaData } = await searchManga(query, currentPage);
+  const sort = typeof resolvedSearchParams.sort === 'string' ? resolvedSearchParams.sort : 'default';
+  const origin = typeof resolvedSearchParams.origin === 'string' ? resolvedSearchParams.origin : undefined;
+  const demographic = typeof resolvedSearchParams.demographic === 'string' ? resolvedSearchParams.demographic : undefined;
+  const genre = typeof resolvedSearchParams.genre === 'string' ? resolvedSearchParams.genre : undefined;
+  const theme = typeof resolvedSearchParams.theme === 'string' ? resolvedSearchParams.theme : undefined;
+  const mature = typeof resolvedSearchParams.mature === 'string' ? resolvedSearchParams.mature : undefined;
+
+  const { mangaList, metaData } = await fetchMangaList({
+    page: currentPage,
+    limit: 36,
+    title: query,
+    sort,
+    origin,
+    demographic,
+    genre,
+    theme,
+    mature
+  });
 
   return (
     <div className="space-y-8 pb-12">
-      <section>
-        <h2 className="text-2xl font-bold mb-4">
-          {query ? `Search Results for "${query}"` : 'Search Manga'}
-        </h2>
+      <section className="space-y-6">
+        <SearchFilter />
         
         {mangaList.length > 0 ? (
           <>
@@ -39,8 +55,11 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
             <Pagination currentPage={currentPage} totalPages={metaData.totalPages} />
           </>
         ) : (
-          <div className="text-zinc-500 py-12 text-center">
-            {query ? 'No results found.' : 'Enter a search query to find manga.'}
+          <div className="text-zinc-500 py-24 text-center flex flex-col items-center justify-center">
+            <p className="text-lg font-medium text-white mb-2">
+              {query || origin || demographic || genre || theme || mature ? 'No results found.' : 'Enter a search term or select a genre to find manga'}
+            </p>
+            <p className="text-sm">Try adjusting your filters or search query.</p>
           </div>
         )}
       </section>
