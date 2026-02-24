@@ -91,17 +91,17 @@ export function Sidebar() {
 
   return (
     <aside className={cn(
-      "flex-shrink-0 border-r border-white/5 bg-[#0a0a0a] flex flex-col h-screen sticky top-0 transition-all duration-300",
+      "flex-shrink-0 border-r dark:border-white/5 border-black/5 dark:bg-[#0a0a0a] bg-white flex flex-col h-screen sticky top-0 transition-all duration-300",
       isCollapsed ? "w-[60px]" : "w-[240px]"
     )}>
       <div className={cn("py-4 flex items-center h-14", isCollapsed ? "justify-center px-0" : "px-5 gap-3")}>
         <button 
           onClick={() => setIsCollapsed(!isCollapsed)} 
-          className="text-zinc-400 hover:text-white transition-colors flex items-center justify-center"
+          className="dark:text-zinc-400 text-zinc-600 dark:hover:text-white hover:text-black transition-colors flex items-center justify-center"
         >
           {isCollapsed ? <PanelLeftOpen className="w-5 h-5" /> : <PanelLeftClose className="w-5 h-5" />}
         </button>
-        {!isCollapsed && <span className="font-medium text-zinc-300">Manga</span>}
+        {!isCollapsed && <span className="font-medium dark:text-zinc-300 text-zinc-700">Manga</span>}
       </div>
       
       <div className="flex-1 overflow-y-auto py-2 flex flex-col gap-6 overflow-x-hidden">
@@ -115,7 +115,7 @@ export function Sidebar() {
                 className={cn(
                   "flex items-center rounded-lg transition-colors text-sm font-medium group",
                   isCollapsed ? "justify-center py-3 px-0" : "gap-3 px-3 py-2",
-                  isActive ? "text-white bg-white/10" : "text-zinc-400 hover:text-white hover:bg-white/5"
+                  isActive ? "dark:text-white text-black dark:bg-white/10 bg-black/5" : "dark:text-zinc-400 text-zinc-600 dark:hover:text-white hover:text-black dark:hover:bg-white/5 hover:bg-black/5"
                 )}
                 title={isCollapsed ? item.label : undefined}
               >
@@ -126,7 +126,7 @@ export function Sidebar() {
                     {item.shortcut && (
                       <div className="flex items-center gap-1">
                         {item.shortcut.map(key => (
-                          <kbd key={key} className="bg-white/10 px-1.5 py-0.5 rounded text-[10px] text-zinc-400 font-mono">{key}</kbd>
+                          <kbd key={key} className="dark:bg-white/10 bg-black/5 px-1.5 py-0.5 rounded text-[10px] dark:text-zinc-400 text-zinc-600 font-mono">{key}</kbd>
                         ))}
                       </div>
                     )}
@@ -137,7 +137,7 @@ export function Sidebar() {
           })}
         </nav>
 
-        <div className="h-px bg-white/5 mx-6 flex-shrink-0" />
+        <div className="h-px dark:bg-white/5 bg-black/5 mx-6 flex-shrink-0" />
 
         <nav className="flex flex-col px-3 gap-0.5">
           {categoryItems.map((item) => {
@@ -156,19 +156,19 @@ export function Sidebar() {
                     className={cn(
                       "flex items-center rounded-lg transition-colors text-sm font-medium group w-full",
                       isCollapsed ? "justify-center py-3 px-0" : "gap-3 px-3 py-2",
-                      isActive && !isExpanded ? "text-white bg-white/10" : "text-zinc-400 hover:text-white hover:bg-white/5",
-                      isActive && isExpanded ? "text-white hover:bg-white/5" : ""
+                      isActive && !isExpanded ? "dark:text-white text-black dark:bg-white/10 bg-black/5" : "dark:text-zinc-400 text-zinc-600 dark:hover:text-white hover:text-black dark:hover:bg-white/5 hover:bg-black/5",
+                      isActive && isExpanded ? "dark:text-white text-black dark:hover:bg-white/5 hover:bg-black/5" : ""
                     )}
                     title={isCollapsed ? item.label : undefined}
                   >
-                    <item.icon className={cn("w-5 h-5 flex-shrink-0", isSubActive && isCollapsed ? "text-white" : "")} />
+                    <item.icon className={cn("w-5 h-5 flex-shrink-0", isSubActive && isCollapsed ? "dark:text-white text-black" : "")} />
                     {!isCollapsed && (
                       <>
-                        <span className={cn("flex-1 text-left whitespace-nowrap", isSubActive && isCollapsed ? "text-white" : "")}>{item.label}</span>
+                        <span className={cn("flex-1 text-left whitespace-nowrap", isSubActive && isCollapsed ? "dark:text-white text-black" : "")}>{item.label}</span>
                         {isExpanded ? (
-                          <ChevronDown className="w-4 h-4 text-zinc-600 group-hover:text-zinc-400 transition-colors flex-shrink-0" />
+                          <ChevronDown className="w-4 h-4 dark:text-zinc-600 text-zinc-400 dark:group-hover:text-zinc-400 group-hover:text-zinc-600 transition-colors flex-shrink-0" />
                         ) : (
-                          <ChevronRight className="w-4 h-4 text-zinc-600 group-hover:text-zinc-400 transition-colors flex-shrink-0" />
+                          <ChevronRight className="w-4 h-4 dark:text-zinc-600 text-zinc-400 dark:group-hover:text-zinc-400 group-hover:text-zinc-600 transition-colors flex-shrink-0" />
                         )}
                       </>
                     )}
@@ -179,7 +179,7 @@ export function Sidebar() {
                     className={cn(
                       "flex items-center rounded-lg transition-colors text-sm font-medium group",
                       isCollapsed ? "justify-center py-3 px-0" : "gap-3 px-3 py-2",
-                      isActive ? "text-white bg-white/10" : "text-zinc-400 hover:text-white hover:bg-white/5"
+                      isActive ? "dark:text-white text-black dark:bg-white/10 bg-black/5" : "dark:text-zinc-400 text-zinc-600 dark:hover:text-white hover:text-black dark:hover:bg-white/5 hover:bg-black/5"
                     )}
                     title={isCollapsed ? item.label : undefined}
                   >
@@ -187,14 +187,14 @@ export function Sidebar() {
                     {!isCollapsed && (
                       <>
                         <span className="flex-1 whitespace-nowrap">{item.label}</span>
-                        <ChevronRight className="w-4 h-4 text-zinc-600 group-hover:text-zinc-400 transition-colors flex-shrink-0" />
+                        <ChevronRight className="w-4 h-4 dark:text-zinc-600 text-zinc-400 dark:group-hover:text-zinc-400 group-hover:text-zinc-600 transition-colors flex-shrink-0" />
                       </>
                     )}
                   </Link>
                 )}
                 
                 {item.submenu && isExpanded && !isCollapsed && (
-                  <div className="ml-[21px] pl-4 mt-1 border-l border-white/10 flex flex-col gap-1">
+                  <div className="ml-[21px] pl-4 mt-1 border-l dark:border-white/10 border-black/10 flex flex-col gap-1">
                     {item.submenu.map(subItem => {
                       const isSubItemActive = pathname === subItem.href;
                       return (
@@ -203,7 +203,7 @@ export function Sidebar() {
                           href={subItem.href}
                           className={cn(
                             "px-3 py-1.5 rounded-lg transition-colors text-sm font-medium whitespace-nowrap",
-                            isSubItemActive ? "text-white bg-white/10" : "text-zinc-400 hover:text-white hover:bg-white/5"
+                            isSubItemActive ? "dark:text-white text-black dark:bg-white/10 bg-black/5" : "dark:text-zinc-400 text-zinc-600 dark:hover:text-white hover:text-black dark:hover:bg-white/5 hover:bg-black/5"
                           )}
                         >
                           {subItem.label}
@@ -218,11 +218,11 @@ export function Sidebar() {
         </nav>
       </div>
 
-      <div className="mt-auto py-4 px-3 flex flex-col gap-0.5 border-t border-white/5 overflow-x-hidden">
+      <div className="mt-auto py-4 px-3 flex flex-col gap-0.5 border-t dark:border-white/5 border-black/5 overflow-x-hidden">
         <Link
           href="/settings"
           className={cn(
-            "flex items-center rounded-lg transition-colors text-sm font-medium text-zinc-400 hover:text-white hover:bg-white/5 group",
+            "flex items-center rounded-lg transition-colors text-sm font-medium dark:text-zinc-400 text-zinc-600 dark:hover:text-white hover:text-black dark:hover:bg-white/5 hover:bg-black/5 group",
             isCollapsed ? "justify-center py-3 px-0" : "gap-3 px-3 py-2"
           )}
           title={isCollapsed ? "Settings" : undefined}
@@ -232,8 +232,8 @@ export function Sidebar() {
             <>
               <span className="flex-1 whitespace-nowrap">Settings</span>
               <div className="flex items-center gap-1">
-                <kbd className="bg-white/10 px-1.5 py-0.5 rounded text-[10px] text-zinc-400 font-mono">ctrl</kbd>
-                <kbd className="bg-white/10 px-1.5 py-0.5 rounded text-[10px] text-zinc-400 font-mono">,</kbd>
+                <kbd className="dark:bg-white/10 bg-black/5 px-1.5 py-0.5 rounded text-[10px] dark:text-zinc-400 text-zinc-600 font-mono">ctrl</kbd>
+                <kbd className="dark:bg-white/10 bg-black/5 px-1.5 py-0.5 rounded text-[10px] dark:text-zinc-400 text-zinc-600 font-mono">,</kbd>
               </div>
             </>
           )}
@@ -241,7 +241,7 @@ export function Sidebar() {
         <Link
           href="/login"
           className={cn(
-            "flex items-center rounded-lg transition-colors text-sm font-medium text-zinc-400 hover:text-white hover:bg-white/5 group",
+            "flex items-center rounded-lg transition-colors text-sm font-medium dark:text-zinc-400 text-zinc-600 dark:hover:text-white hover:text-black dark:hover:bg-white/5 hover:bg-black/5 group",
             isCollapsed ? "justify-center py-3 px-0" : "gap-3 px-3 py-2"
           )}
           title={isCollapsed ? "Login" : undefined}
@@ -251,8 +251,8 @@ export function Sidebar() {
             <>
               <span className="flex-1 whitespace-nowrap">Login</span>
               <div className="flex items-center gap-1">
-                <kbd className="bg-white/10 px-1.5 py-0.5 rounded text-[10px] text-zinc-400 font-mono">ctrl</kbd>
-                <kbd className="bg-white/10 px-1.5 py-0.5 rounded text-[10px] text-zinc-400 font-mono">.</kbd>
+                <kbd className="dark:bg-white/10 bg-black/5 px-1.5 py-0.5 rounded text-[10px] dark:text-zinc-400 text-zinc-600 font-mono">ctrl</kbd>
+                <kbd className="dark:bg-white/10 bg-black/5 px-1.5 py-0.5 rounded text-[10px] dark:text-zinc-400 text-zinc-600 font-mono">.</kbd>
               </div>
             </>
           )}

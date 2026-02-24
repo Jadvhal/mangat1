@@ -21,33 +21,33 @@ export default async function ChapterPage({ params }: { params: Promise<{ id: st
 
   return (
     <div className="max-w-4xl mx-auto pb-20">
-      <div className="sticky top-14 z-10 bg-[#0a0a0a]/90 backdrop-blur-md border-b border-white/10 py-4 px-6 flex items-center justify-between mb-8 -mx-6">
+      <div className="sticky top-14 z-10 dark:bg-[#0a0a0a]/90 bg-white/90 backdrop-blur-md border-b dark:border-white/10 border-black/10 py-4 px-6 flex items-center justify-between mb-8 -mx-6">
         <div className="flex-1 min-w-0">
-          <Link href={`/manga/${id}`} className="text-sm text-zinc-400 hover:text-white transition-colors line-clamp-1">
+          <Link href={`/manga/${id}`} className="text-sm dark:text-zinc-400 text-zinc-600 dark:hover:text-white hover:text-black transition-colors line-clamp-1">
             {chapter.title}
           </Link>
-          <h1 className="text-lg font-bold text-white line-clamp-1">{chapter.currentChapter}</h1>
+          <h1 className="text-lg font-bold dark:text-white text-black line-clamp-1">{chapter.currentChapter}</h1>
         </div>
 
         <div className="flex items-center gap-4 ml-4">
-          <div className="flex items-center bg-[#141414] rounded-lg border border-white/10 overflow-hidden">
+          <div className="flex items-center dark:bg-[#141414] bg-white rounded-lg border dark:border-white/10 border-black/10 overflow-hidden shadow-sm">
             <Link 
               href={prevChapter ? `/manga/${id}/chapter/${prevChapter.id}` : '#'} 
-              className={`p-2 hover:bg-white/10 transition-colors ${!prevChapter ? 'opacity-50 pointer-events-none' : ''}`}
+              className={`p-2 dark:hover:bg-white/10 hover:bg-black/5 transition-colors ${!prevChapter ? 'opacity-50 pointer-events-none' : ''} dark:text-white text-black`}
             >
               <ChevronLeft className="w-5 h-5" />
             </Link>
-            <div className="px-4 text-sm font-medium border-x border-white/10">
+            <div className="px-4 text-sm font-medium border-x dark:border-white/10 border-black/10 dark:text-white text-black">
               Ch. {chapter.currentChapter.split('Chapter ')[1]?.split(':')[0] || '??'}
             </div>
             <Link 
               href={nextChapter ? `/manga/${id}/chapter/${nextChapter.id}` : '#'} 
-              className={`p-2 hover:bg-white/10 transition-colors ${!nextChapter ? 'opacity-50 pointer-events-none' : ''}`}
+              className={`p-2 dark:hover:bg-white/10 hover:bg-black/5 transition-colors ${!nextChapter ? 'opacity-50 pointer-events-none' : ''} dark:text-white text-black`}
             >
               <ChevronRight className="w-5 h-5" />
             </Link>
           </div>
-          <button className="p-2 bg-white/5 hover:bg-white/10 rounded-lg transition-colors">
+          <button className="p-2 dark:bg-white/5 bg-black/5 dark:hover:bg-white/10 hover:bg-black/10 rounded-lg transition-colors dark:text-white text-black">
             <Settings className="w-5 h-5" />
           </button>
         </div>
@@ -61,7 +61,7 @@ export default async function ChapterPage({ params }: { params: Promise<{ id: st
             <img 
               src={img.image} 
               alt={img.title} 
-              className="w-full h-auto object-contain bg-[#141414]"
+              className="w-full h-auto object-contain dark:bg-[#141414] bg-white shadow-sm"
               loading="lazy"
               referrerPolicy="no-referrer"
             />
@@ -73,7 +73,7 @@ export default async function ChapterPage({ params }: { params: Promise<{ id: st
         {prevChapter && (
            <Link 
              href={`/manga/${id}/chapter/${prevChapter.id}`}
-             className="px-6 py-3 bg-[#141414] hover:bg-white/10 border border-white/10 rounded-xl font-medium transition-colors flex items-center gap-2"
+             className="px-6 py-3 dark:bg-[#141414] bg-white dark:hover:bg-white/10 hover:bg-black/5 border dark:border-white/10 border-black/10 rounded-xl font-medium transition-colors flex items-center gap-2 dark:text-white text-black shadow-sm"
            >
              <ChevronLeft className="w-5 h-5" />
              Previous Chapter
@@ -82,7 +82,7 @@ export default async function ChapterPage({ params }: { params: Promise<{ id: st
         {nextChapter && (
            <Link 
              href={`/manga/${id}/chapter/${nextChapter.id}`}
-             className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-medium transition-colors flex items-center gap-2"
+             className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-medium transition-colors flex items-center gap-2 shadow-sm"
            >
              Next Chapter
              <ChevronRight className="w-5 h-5" />

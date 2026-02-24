@@ -20,7 +20,7 @@ export function TimeFilter() {
       <select
         value={currentTime}
         onChange={handleChange}
-        className="appearance-none bg-[#141414] border border-white/10 text-white text-sm rounded-lg px-4 py-2 pr-10 focus:outline-none focus:border-white/20 cursor-pointer"
+        className="appearance-none dark:bg-[#141414] bg-white border dark:border-white/10 border-black/10 dark:text-white text-black text-sm rounded-lg px-4 py-2 pr-10 focus:outline-none dark:focus:border-white/20 focus:border-black/20 cursor-pointer"
       >
         <option value="24h">Last 24 Hours</option>
         <option value="7d">Last 7 Days</option>

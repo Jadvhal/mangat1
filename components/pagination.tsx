@@ -40,12 +40,12 @@ function PaginationInner({ currentPage, totalPages }: { currentPage: number, tot
   return (
     <div className="flex justify-center items-center gap-2 mt-8">
       {currentPage > 1 ? (
-        <Link href={createPageUrl(currentPage - 1)} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-zinc-400 border border-white/10 hover:text-white hover:bg-white/5 transition-colors">
+        <Link href={createPageUrl(currentPage - 1)} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium dark:text-zinc-400 text-zinc-600 border dark:border-white/10 border-black/10 dark:hover:text-white hover:text-black dark:hover:bg-white/5 hover:bg-black/5 transition-colors">
           <ChevronLeft className="w-4 h-4" />
           Previous
         </Link>
       ) : (
-        <button disabled className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-zinc-600 border border-white/5 cursor-not-allowed">
+        <button disabled className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium dark:text-zinc-600 text-zinc-400 border dark:border-white/5 border-black/5 cursor-not-allowed">
           <ChevronLeft className="w-4 h-4" />
           Previous
         </button>
@@ -54,7 +54,7 @@ function PaginationInner({ currentPage, totalPages }: { currentPage: number, tot
       <div className="flex items-center gap-2">
         {pages.map((page, index) => {
           if (page === '...') {
-            return <span key={`ellipsis-${index}`} className="text-zinc-500 px-1">...</span>;
+            return <span key={`ellipsis-${index}`} className="dark:text-zinc-500 text-zinc-500 px-1">...</span>;
           }
           
           const isCurrent = page === currentPage;
@@ -63,7 +63,7 @@ function PaginationInner({ currentPage, totalPages }: { currentPage: number, tot
             <Link 
               key={`page-${page}`} 
               href={createPageUrl(page)} 
-              className={`min-w-[2rem] px-2 h-8 flex items-center justify-center rounded text-sm font-medium transition-colors ${isCurrent ? 'bg-white text-black' : 'border border-white/10 text-zinc-400 hover:bg-white/5 hover:text-white'}`}
+              className={`min-w-[2rem] px-2 h-8 flex items-center justify-center rounded text-sm font-medium transition-colors ${isCurrent ? 'dark:bg-white bg-black dark:text-black text-white' : 'border dark:border-white/10 border-black/10 dark:text-zinc-400 text-zinc-600 dark:hover:bg-white/5 hover:bg-black/5 dark:hover:text-white hover:text-black'}`}
             >
               {page}
             </Link>
@@ -72,12 +72,12 @@ function PaginationInner({ currentPage, totalPages }: { currentPage: number, tot
       </div>
 
       {currentPage < totalPages ? (
-        <Link href={createPageUrl(currentPage + 1)} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white border border-white/10 hover:bg-white/5 transition-colors">
+        <Link href={createPageUrl(currentPage + 1)} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium dark:text-white text-black border dark:border-white/10 border-black/10 dark:hover:bg-white/5 hover:bg-black/5 transition-colors">
           Next
           <ChevronRight className="w-4 h-4" />
         </Link>
       ) : (
-        <button disabled className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-zinc-600 border border-white/5 cursor-not-allowed">
+        <button disabled className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium dark:text-zinc-600 text-zinc-400 border dark:border-white/5 border-black/5 cursor-not-allowed">
           Next
           <ChevronRight className="w-4 h-4" />
         </button>

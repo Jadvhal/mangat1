@@ -24,11 +24,11 @@ function SearchInput() {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Search manga..."
-        className="w-full bg-[#141414] border border-white/5 rounded-lg pl-4 pr-12 py-1.5 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-white/20 transition-colors"
+        className="w-full dark:bg-[#141414] bg-white border dark:border-white/5 border-black/10 rounded-lg pl-4 pr-12 py-1.5 text-sm dark:text-white text-black dark:placeholder:text-zinc-500 placeholder:text-zinc-400 focus:outline-none dark:focus:border-white/20 focus:border-black/20 transition-colors"
       />
       <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none gap-1">
-        <kbd className="bg-white/10 px-1.5 py-0.5 rounded text-[10px] text-zinc-400 font-mono">ctrl</kbd>
-        <kbd className="bg-white/10 px-1.5 py-0.5 rounded text-[10px] text-zinc-400 font-mono">k</kbd>
+        <kbd className="dark:bg-white/10 bg-black/5 px-1.5 py-0.5 rounded text-[10px] dark:text-zinc-400 text-zinc-500 font-mono">ctrl</kbd>
+        <kbd className="dark:bg-white/10 bg-black/5 px-1.5 py-0.5 rounded text-[10px] dark:text-zinc-400 text-zinc-500 font-mono">k</kbd>
       </div>
     </form>
   );
@@ -38,13 +38,13 @@ export function Topbar() {
   const { isCollapsed } = useSidebar();
 
   return (
-    <header className="h-14 bg-[#0a0a0a] flex items-center justify-between px-6 sticky top-0 z-10">
+    <header className="h-14 dark:bg-[#0a0a0a] bg-white border-b dark:border-white/5 border-black/5 flex items-center justify-between px-6 sticky top-0 z-10 transition-colors">
       <div className="flex items-center">
         {isCollapsed && (
-          <span className="font-medium text-zinc-400 text-sm">Manga</span>
+          <span className="font-medium dark:text-zinc-400 text-zinc-600 text-sm">Manga</span>
         )}
       </div>
-      <Suspense fallback={<div className="w-96 h-8 bg-[#141414] rounded-lg animate-pulse" />}>
+      <Suspense fallback={<div className="w-96 h-8 dark:bg-[#141414] bg-zinc-100 rounded-lg animate-pulse" />}>
         <SearchInput />
       </Suspense>
     </header>

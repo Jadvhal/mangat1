@@ -37,12 +37,12 @@ export default async function ThemesPage({
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
               {mangaList.map((manga) => (
                 <Link href={`/manga/${manga.id}`} key={manga.id} className="group flex flex-col gap-2">
-                  <div className="relative aspect-[2/3] rounded-xl overflow-hidden border border-white/5 hover:border-white/20 transition-colors">
+                  <div className="relative aspect-[2/3] rounded-xl overflow-hidden border dark:border-white/5 border-black/5 dark:hover:border-white/20 hover:border-black/20 transition-colors">
                     <Image src={manga.image} alt={manga.title} fill className="object-cover group-hover:scale-105 transition-transform duration-300" referrerPolicy="no-referrer" />
                   </div>
                   <div>
-                    <h3 className="font-medium text-sm text-white line-clamp-1 group-hover:text-purple-400 transition-colors">{manga.title}</h3>
-                    <p className="text-xs text-zinc-500">{manga.chapter}</p>
+                    <h3 className="font-medium text-sm dark:text-white text-black line-clamp-1 group-hover:text-purple-400 transition-colors">{manga.title}</h3>
+                    <p className="text-xs dark:text-zinc-500 text-zinc-500">{manga.chapter}</p>
                   </div>
                 </Link>
               ))}
@@ -51,7 +51,7 @@ export default async function ThemesPage({
             <Pagination currentPage={currentPage} totalPages={metaData.totalPages} />
           </>
         ) : (
-          <div className="text-zinc-500 py-12 text-center">
+          <div className="dark:text-zinc-500 text-zinc-500 py-12 text-center">
             No manga found for this theme.
           </div>
         )}
