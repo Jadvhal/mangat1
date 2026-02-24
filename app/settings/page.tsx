@@ -3,17 +3,22 @@
 import { useState } from 'react';
 import { List, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useSettings } from '@/components/settings-context';
 
 type Tab = 'General' | 'Manga' | 'Shortcuts' | 'Search';
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState<Tab>('General');
+  const { resetSettings } = useSettings();
 
   return (
     <div className="max-w-5xl mx-auto pb-12">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-white">Settings</h1>
-        <button className="bg-[#c22543] hover:bg-[#a01d36] text-white px-4 py-1.5 rounded-lg font-medium transition-colors">
+        <button 
+          onClick={resetSettings}
+          className="bg-[#c22543] hover:bg-[#a01d36] text-white px-4 py-1.5 rounded-lg font-medium transition-colors"
+        >
           Reset
         </button>
       </div>
@@ -70,12 +75,7 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (checked: b
 }
 
 function GeneralSettings() {
-  const [theme, setTheme] = useState('System');
-  const [fancyAnimations, setFancyAnimations] = useState(true);
-  const [showToasts, setShowToasts] = useState(true);
-  const [loginMal, setLoginMal] = useState(false);
-  const [loginAnilist, setLoginAnilist] = useState(false);
-  const [allowAnalytics, setAllowAnalytics] = useState(true);
+  const { settings, updateSetting } = useSettings();
 
   return (
     <div className="space-y-8">
@@ -93,8 +93,8 @@ function GeneralSettings() {
             <div className="font-medium text-white mb-1">Theme</div>
             <div className="text-sm text-zinc-500 mb-3">Select the application theme.</div>
             <select
-              value={theme}
-              onChange={(e) => setTheme(e.target.value)}
+              value={settings.theme}
+              onChange={(e) => updateSetting('theme', e.target.value as any)}
               className="w-full sm:w-64 bg-transparent border border-white/20 text-white text-sm rounded-lg px-4 py-2.5 focus:outline-none focus:border-white/40 cursor-pointer appearance-none"
             >
               <option value="System" className="bg-[#141414]">System</option>
@@ -105,7 +105,7 @@ function GeneralSettings() {
           <div>
             <div className="font-medium text-white mb-1">Fancy Animations</div>
             <div className="text-sm text-zinc-500 mb-3">Such as manga detail pages cover image.</div>
-            <Toggle checked={fancyAnimations} onChange={setFancyAnimations} />
+            <Toggle checked={settings.fancyAnimations} onChange={(v) => updateSetting('fancyAnimations', v)} />
           </div>
         </div>
       </section>
@@ -116,7 +116,7 @@ function GeneralSettings() {
           <div>
             <div className="font-medium text-white mb-1">Show Toasts</div>
             <div className="text-sm text-zinc-500 mb-3">Show toast notifications for various actions.</div>
-            <Toggle checked={showToasts} onChange={setShowToasts} />
+            <Toggle checked={settings.showToasts} onChange={(v) => updateSetting('showToasts', v)} />
           </div>
           <div>
             <div className="font-medium text-white mb-1">Login Toasts</div>
@@ -124,11 +124,11 @@ function GeneralSettings() {
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-3">
                 <span className="text-sm font-medium text-white">MAL</span>
-                <Toggle checked={loginMal} onChange={setLoginMal} />
+                <Toggle checked={settings.loginMal} onChange={(v) => updateSetting('loginMal', v)} />
               </div>
               <div className="flex items-center gap-3">
                 <span className="text-sm font-medium text-white">AniList</span>
-                <Toggle checked={loginAnilist} onChange={setLoginAnilist} />
+                <Toggle checked={settings.loginAnilist} onChange={(v) => updateSetting('loginAnilist', v)} />
               </div>
             </div>
           </div>
@@ -141,7 +141,7 @@ function GeneralSettings() {
           <div>
             <div className="font-medium text-white mb-1">Allow Analytics</div>
             <div className="text-sm text-zinc-500 mb-3">Allow the collection of anonymous analytics data.</div>
-            <Toggle checked={allowAnalytics} onChange={setAllowAnalytics} />
+            <Toggle checked={settings.allowAnalytics} onChange={(v) => updateSetting('allowAnalytics', v)} />
           </div>
         </div>
       </section>
@@ -150,11 +150,7 @@ function GeneralSettings() {
 }
 
 function MangaSettings() {
-  const [displayType, setDisplayType] = useState('Auto');
-  const [showProgress, setShowProgress] = useState(true);
-  const [stripWidth, setStripWidth] = useState(144);
-  const [readingDirection, setReadingDirection] = useState('Left to Right');
-  const [advanceChapter, setAdvanceChapter] = useState(true);
+  const { settings, updateSetting } = useSettings();
 
   return (
     <div className="space-y-8">
@@ -175,8 +171,8 @@ function MangaSettings() {
             </div>
             <div className="text-sm text-zinc-500 mb-3">Select the default reader type for manga.</div>
             <select
-              value={displayType}
-              onChange={(e) => setDisplayType(e.target.value)}
+              value={settings.displayType}
+              onChange={(e) => updateSetting('displayType', e.target.value as any)}
               className="w-full bg-transparent border border-white/20 text-white text-sm rounded-lg px-4 py-2.5 focus:outline-none focus:border-white/40 cursor-pointer appearance-none"
             >
               <option value="Auto" className="bg-[#141414]">Auto</option>
@@ -187,7 +183,7 @@ function MangaSettings() {
           <div>
             <div className="font-medium text-white mb-1">Show Page Progress</div>
             <div className="text-sm text-zinc-500 mb-3">Shows a progress bar at the side/ bottom when reading.</div>
-            <Toggle checked={showProgress} onChange={setShowProgress} />
+            <Toggle checked={settings.showProgress} onChange={(v) => updateSetting('showProgress', v)} />
           </div>
           <div>
             <div className="font-medium text-white mb-1">Strip Reader Width</div>
@@ -197,9 +193,9 @@ function MangaSettings() {
                 <span>32</span>
                 <span 
                   className="absolute transform -translate-x-1/2" 
-                  style={{ left: `${((stripWidth - 32) / (256 - 32)) * 100}%` }}
+                  style={{ left: `${((settings.stripWidth - 32) / (256 - 32)) * 100}%` }}
                 >
-                  {stripWidth}
+                  {settings.stripWidth}
                 </span>
                 <span>256</span>
               </div>
@@ -207,11 +203,11 @@ function MangaSettings() {
                 type="range"
                 min="32"
                 max="256"
-                value={stripWidth}
-                onChange={(e) => setStripWidth(parseInt(e.target.value))}
+                value={settings.stripWidth}
+                onChange={(e) => updateSetting('stripWidth', parseInt(e.target.value))}
                 className="w-full h-1 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-white"
                 style={{
-                  background: `linear-gradient(to right, white 0%, white ${((stripWidth - 32) / (256 - 32)) * 100}%, #3f3f46 ${((stripWidth - 32) / (256 - 32)) * 100}%, #3f3f46 100%)`
+                  background: `linear-gradient(to right, white 0%, white ${((settings.stripWidth - 32) / (256 - 32)) * 100}%, #3f3f46 ${((settings.stripWidth - 32) / (256 - 32)) * 100}%, #3f3f46 100%)`
                 }}
               />
             </div>
@@ -226,8 +222,8 @@ function MangaSettings() {
             <div className="font-medium text-white mb-1">Reading Direction</div>
             <div className="text-sm text-zinc-500 mb-3">Select the reading direction for manga.</div>
             <select
-              value={readingDirection}
-              onChange={(e) => setReadingDirection(e.target.value)}
+              value={settings.readingDirection}
+              onChange={(e) => updateSetting('readingDirection', e.target.value as any)}
               className="w-full sm:w-64 bg-transparent border border-white/20 text-white text-sm rounded-lg px-4 py-2.5 focus:outline-none focus:border-white/40 cursor-pointer appearance-none"
             >
               <option value="Left to Right" className="bg-[#141414]">Left to Right</option>
@@ -237,7 +233,7 @@ function MangaSettings() {
           <div>
             <div className="font-medium text-white mb-1">Advance chapter on last page</div>
             <div className="text-sm text-zinc-500 mb-3">Automatically advance to the next chapter when reaching the last page.</div>
-            <Toggle checked={advanceChapter} onChange={setAdvanceChapter} />
+            <Toggle checked={settings.advanceChapter} onChange={(v) => updateSetting('advanceChapter', v)} />
           </div>
         </div>
       </section>
@@ -246,7 +242,7 @@ function MangaSettings() {
 }
 
 function ShortcutsSettings() {
-  const [showShortcuts, setShowShortcuts] = useState(true);
+  const { settings, updateSetting } = useSettings();
 
   const ShortcutInput = ({ label, description, value }: { label: string, description: string, value: string }) => (
     <div>
@@ -275,7 +271,7 @@ function ShortcutsSettings() {
         <div>
           <div className="font-medium text-white mb-1">Show Shortcuts</div>
           <div className="text-sm text-zinc-500 mb-3">Enable or disable keyboard shortcuts.</div>
-          <Toggle checked={showShortcuts} onChange={setShowShortcuts} />
+          <Toggle checked={settings.showShortcuts} onChange={(v) => updateSetting('showShortcuts', v)} />
         </div>
       </section>
 

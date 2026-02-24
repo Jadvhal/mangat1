@@ -4,6 +4,7 @@ import './globals.css'; // Global styles
 import { Sidebar } from '@/components/layout/sidebar';
 import { Topbar } from '@/components/layout/topbar';
 import { SidebarProvider } from '@/components/layout/sidebar-context';
+import { SettingsProvider } from '@/components/settings-context';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -24,15 +25,17 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
   return (
     <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
       <body className="bg-[#050505] text-white flex min-h-screen font-sans" suppressHydrationWarning>
-        <SidebarProvider>
-          <Sidebar />
-          <div className="flex-1 flex flex-col min-w-0">
-            <Topbar />
-            <main className="flex-1 overflow-auto p-6">
-              {children}
-            </main>
-          </div>
-        </SidebarProvider>
+        <SettingsProvider>
+          <SidebarProvider>
+            <Sidebar />
+            <div className="flex-1 flex flex-col min-w-0">
+              <Topbar />
+              <main className="flex-1 overflow-auto p-6">
+                {children}
+              </main>
+            </div>
+          </SidebarProvider>
+        </SettingsProvider>
       </body>
     </html>
   );
