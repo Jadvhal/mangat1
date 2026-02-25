@@ -22,12 +22,12 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
   return (
     <div className="space-y-8 pb-12">
       <section>
-        <h2 className="text-2xl font-bold mb-4">Popular Manga</h2>
+        <h2 className="text-2xl font-bold mb-4 dark:text-white text-black">Popular Manga</h2>
         <PopularCarousel mangaList={popular} />
       </section>
 
       <section>
-        <h2 className="text-2xl font-bold mb-4">All Manga List</h2>
+        <h2 className="text-2xl font-bold mb-4 dark:text-white text-black">All Manga List</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
           {latest.map((manga) => (
             <Link href={`/manga/${manga.id}`} key={manga.id} className="group flex flex-col gap-2">

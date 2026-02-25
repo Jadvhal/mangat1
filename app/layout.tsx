@@ -45,7 +45,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
           }}
         />
       </head>
-      <body className="dark:bg-[#050505] bg-zinc-50 dark:text-white text-black flex min-h-screen font-sans transition-colors" suppressHydrationWarning>
+      <body className="dark:bg-[#050505] bg-white dark:text-white text-black flex min-h-screen font-sans transition-colors" suppressHydrationWarning>
         <SettingsProvider>
           <SidebarProvider>
             <Sidebar />

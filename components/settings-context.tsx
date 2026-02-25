@@ -52,7 +52,10 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     const stored = localStorage.getItem('app-settings');
     if (stored) {
       try {
-        setSettings({ ...defaultSettings, ...JSON.parse(stored) });
+        const parsed = JSON.parse(stored);
+        if (JSON.stringify(parsed) !== JSON.stringify(settings)) {
+          setSettings({ ...defaultSettings, ...parsed });
+        }
       } catch (e) {
         console.error('Failed to parse settings', e);
       }

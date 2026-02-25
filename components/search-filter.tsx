@@ -13,6 +13,32 @@ const FILTER_OPTIONS = {
   mature: ['Adult', 'Hentai', 'Mature', 'Shoujo Ai', 'Shounen Ai', 'Smut']
 };
 
+const FilterSection = ({ title, options, selected, setSelected, toggleSelection }: { title: string, options: string[], selected: string[], setSelected: React.Dispatch<React.SetStateAction<string[]>>, toggleSelection: (item: string, list: string[], setList: React.Dispatch<React.SetStateAction<string[]>>) => void }) => (
+  <div className="mb-6">
+    <h4 className="text-sm font-medium dark:text-zinc-400 text-zinc-600 mb-3">{title}</h4>
+    <div className="flex flex-wrap gap-2">
+      {options.map(opt => {
+        const isSelected = selected.includes(opt);
+        return (
+          <button
+            key={opt}
+            type="button"
+            onClick={() => toggleSelection(opt, selected, setSelected)}
+            className={cn(
+              "px-3 py-1.5 rounded-lg text-sm font-medium transition-colors border",
+              isSelected 
+                ? "dark:bg-white bg-black dark:text-black text-white dark:border-white border-black" 
+                : "bg-transparent dark:text-zinc-300 text-zinc-700 dark:border-white/10 border-black/10 dark:hover:border-white/30 hover:border-black/30 dark:hover:bg-white/5 hover:bg-black/5"
+            )}
+          >
+            {opt}
+          </button>
+        );
+      })}
+    </div>
+  </div>
+);
+
 export function SearchFilter() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -29,13 +55,21 @@ export function SearchFilter() {
 
   // Sync state with URL when it changes externally
   useEffect(() => {
-    setQuery(searchParams.get('q') || '');
-    setSort(searchParams.get('sort') || 'default');
-    setSelectedTypes(searchParams.get('origin')?.split(',').filter(Boolean) || []);
-    setSelectedDemographics(searchParams.get('demographic')?.split(',').filter(Boolean) || []);
-    setSelectedGenres(searchParams.get('genre')?.split(',').filter(Boolean) || []);
-    setSelectedThemes(searchParams.get('theme')?.split(',').filter(Boolean) || []);
-    setSelectedMature(searchParams.get('mature')?.split(',').filter(Boolean) || []);
+    const q = searchParams.get('q') || '';
+    const s = searchParams.get('sort') || 'default';
+    const t = searchParams.get('origin')?.split(',').filter(Boolean) || [];
+    const d = searchParams.get('demographic')?.split(',').filter(Boolean) || [];
+    const g = searchParams.get('genre')?.split(',').filter(Boolean) || [];
+    const th = searchParams.get('theme')?.split(',').filter(Boolean) || [];
+    const m = searchParams.get('mature')?.split(',').filter(Boolean) || [];
+
+    if (query !== q) setQuery(q);
+    if (sort !== s) setSort(s);
+    if (JSON.stringify(selectedTypes) !== JSON.stringify(t)) setSelectedTypes(t);
+    if (JSON.stringify(selectedDemographics) !== JSON.stringify(d)) setSelectedDemographics(d);
+    if (JSON.stringify(selectedGenres) !== JSON.stringify(g)) setSelectedGenres(g);
+    if (JSON.stringify(selectedThemes) !== JSON.stringify(th)) setSelectedThemes(th);
+    if (JSON.stringify(selectedMature) !== JSON.stringify(m)) setSelectedMature(m);
   }, [searchParams]);
 
   const handleSearch = (e?: React.FormEvent) => {
@@ -60,32 +94,6 @@ export function SearchFilter() {
       setList([...list, item]);
     }
   };
-
-  const FilterSection = ({ title, options, selected, setSelected }: { title: string, options: string[], selected: string[], setSelected: React.Dispatch<React.SetStateAction<string[]>> }) => (
-    <div className="mb-6">
-      <h4 className="text-sm font-medium dark:text-zinc-400 text-zinc-600 mb-3">{title}</h4>
-      <div className="flex flex-wrap gap-2">
-        {options.map(opt => {
-          const isSelected = selected.includes(opt);
-          return (
-            <button
-              key={opt}
-              type="button"
-              onClick={() => toggleSelection(opt, selected, setSelected)}
-              className={cn(
-                "px-3 py-1.5 rounded-lg text-sm font-medium transition-colors border",
-                isSelected 
-                  ? "dark:bg-white bg-black dark:text-black text-white dark:border-white border-black" 
-                  : "bg-transparent dark:text-zinc-300 text-zinc-700 dark:border-white/10 border-black/10 dark:hover:border-white/30 hover:border-black/30 dark:hover:bg-white/5 hover:bg-black/5"
-              )}
-            >
-              {opt}
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
 
   return (
     <div className="relative w-full z-20">
@@ -118,7 +126,7 @@ export function SearchFilter() {
       </form>
 
       {isFilterOpen && (
-        <div className="absolute top-full right-0 mt-2 w-full max-w-2xl dark:bg-[#0a0a0a] bg-zinc-50 border dark:border-white/10 border-black/10 rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[70vh]">
+        <div className="absolute top-full right-0 mt-2 w-full max-w-2xl dark:bg-[#0a0a0a] bg-white border dark:border-white/10 border-black/10 rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[70vh]">
           <div className="p-4 border-b dark:border-white/10 border-black/10 flex justify-between items-center dark:bg-[#141414] bg-white">
             <h3 className="font-bold text-lg dark:text-white text-black">Filters</h3>
             <button onClick={() => setIsFilterOpen(false)} className="dark:text-zinc-400 text-zinc-600 dark:hover:text-white hover:text-black transition-colors">
@@ -142,14 +150,14 @@ export function SearchFilter() {
               </select>
             </div>
 
-            <FilterSection title="Filter by Type" options={FILTER_OPTIONS.types} selected={selectedTypes} setSelected={setSelectedTypes} />
+            <FilterSection title="Filter by Type" options={FILTER_OPTIONS.types} selected={selectedTypes} setSelected={setSelectedTypes} toggleSelection={toggleSelection} />
             
             <div className="space-y-6 pt-4 border-t dark:border-white/5 border-black/5">
               <h3 className="font-bold dark:text-white text-black">Filter by Genre</h3>
-              <FilterSection title="Demographics" options={FILTER_OPTIONS.demographics} selected={selectedDemographics} setSelected={setSelectedDemographics} />
-              <FilterSection title="Genres" options={FILTER_OPTIONS.genres} selected={selectedGenres} setSelected={setSelectedGenres} />
-              <FilterSection title="Themes" options={FILTER_OPTIONS.themes} selected={selectedThemes} setSelected={setSelectedThemes} />
-              <FilterSection title="Mature" options={FILTER_OPTIONS.mature} selected={selectedMature} setSelected={setSelectedMature} />
+              <FilterSection title="Demographics" options={FILTER_OPTIONS.demographics} selected={selectedDemographics} setSelected={setSelectedDemographics} toggleSelection={toggleSelection} />
+              <FilterSection title="Genres" options={FILTER_OPTIONS.genres} selected={selectedGenres} setSelected={setSelectedGenres} toggleSelection={toggleSelection} />
+              <FilterSection title="Themes" options={FILTER_OPTIONS.themes} selected={selectedThemes} setSelected={setSelectedThemes} toggleSelection={toggleSelection} />
+              <FilterSection title="Mature" options={FILTER_OPTIONS.mature} selected={selectedMature} setSelected={setSelectedMature} toggleSelection={toggleSelection} />
             </div>
           </div>
           

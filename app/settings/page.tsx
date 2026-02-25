@@ -238,21 +238,21 @@ function MangaSettings() {
   );
 }
 
+const ShortcutInput = ({ label, description, value }: { label: string, description: string, value: string }) => (
+  <div>
+    <div className="font-medium dark:text-white text-black mb-1">{label}</div>
+    <div className="text-sm dark:text-zinc-500 text-zinc-500 mb-3">{description}</div>
+    <input
+      type="text"
+      value={value}
+      readOnly
+      className="w-full bg-transparent border dark:border-white/20 border-black/20 dark:text-white text-black text-sm rounded-lg px-4 py-2.5 focus:outline-none dark:focus:border-white/40 focus:border-black/40 cursor-default"
+    />
+  </div>
+);
+
 function ShortcutsSettings() {
   const { settings, updateSetting } = useSettings();
-
-  const ShortcutInput = ({ label, description, value }: { label: string, description: string, value: string }) => (
-    <div>
-      <div className="font-medium dark:text-white text-black mb-1">{label}</div>
-      <div className="text-sm dark:text-zinc-500 text-zinc-500 mb-3">{description}</div>
-      <input
-        type="text"
-        value={value}
-        readOnly
-        className="w-full bg-transparent border dark:border-white/20 border-black/20 dark:text-white text-black text-sm rounded-lg px-4 py-2.5 focus:outline-none dark:focus:border-white/40 focus:border-black/40 cursor-default"
-      />
-    </div>
-  );
 
   return (
     <div className="space-y-8">

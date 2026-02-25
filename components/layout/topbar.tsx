@@ -41,8 +41,8 @@ export function Topbar() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    if (!mounted) setMounted(true);
+  }, [mounted]);
 
   const toggleTheme = () => {
     let currentTheme = settings.theme;
