@@ -53,24 +53,18 @@ export function SearchFilter() {
   const [selectedThemes, setSelectedThemes] = useState<string[]>(searchParams.get('theme')?.split(',').filter(Boolean) || []);
   const [selectedMature, setSelectedMature] = useState<string[]>(searchParams.get('mature')?.split(',').filter(Boolean) || []);
 
-  // Sync state with URL when it changes externally
-  useEffect(() => {
-    const q = searchParams.get('q') || '';
-    const s = searchParams.get('sort') || 'default';
-    const t = searchParams.get('origin')?.split(',').filter(Boolean) || [];
-    const d = searchParams.get('demographic')?.split(',').filter(Boolean) || [];
-    const g = searchParams.get('genre')?.split(',').filter(Boolean) || [];
-    const th = searchParams.get('theme')?.split(',').filter(Boolean) || [];
-    const m = searchParams.get('mature')?.split(',').filter(Boolean) || [];
+  const [prevSearchParams, setPrevSearchParams] = useState(searchParams);
 
-    if (query !== q) setQuery(q);
-    if (sort !== s) setSort(s);
-    if (JSON.stringify(selectedTypes) !== JSON.stringify(t)) setSelectedTypes(t);
-    if (JSON.stringify(selectedDemographics) !== JSON.stringify(d)) setSelectedDemographics(d);
-    if (JSON.stringify(selectedGenres) !== JSON.stringify(g)) setSelectedGenres(g);
-    if (JSON.stringify(selectedThemes) !== JSON.stringify(th)) setSelectedThemes(th);
-    if (JSON.stringify(selectedMature) !== JSON.stringify(m)) setSelectedMature(m);
-  }, [searchParams]);
+  if (searchParams !== prevSearchParams) {
+    setPrevSearchParams(searchParams);
+    setQuery(searchParams.get('q') || '');
+    setSort(searchParams.get('sort') || 'default');
+    setSelectedTypes(searchParams.get('origin')?.split(',').filter(Boolean) || []);
+    setSelectedDemographics(searchParams.get('demographic')?.split(',').filter(Boolean) || []);
+    setSelectedGenres(searchParams.get('genre')?.split(',').filter(Boolean) || []);
+    setSelectedThemes(searchParams.get('theme')?.split(',').filter(Boolean) || []);
+    setSelectedMature(searchParams.get('mature')?.split(',').filter(Boolean) || []);
+  }
 
   const handleSearch = (e?: React.FormEvent) => {
     if (e) e.preventDefault();

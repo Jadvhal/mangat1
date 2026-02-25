@@ -61,6 +61,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
       }
     }
     setMounted(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

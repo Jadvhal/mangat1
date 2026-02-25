@@ -41,8 +41,9 @@ export function Topbar() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    if (!mounted) setMounted(true);
-  }, [mounted]);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+  }, []);
 
   const toggleTheme = () => {
     let currentTheme = settings.theme;

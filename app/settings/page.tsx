@@ -120,7 +120,7 @@ function GeneralSettings() {
           </div>
           <div>
             <div className="font-medium dark:text-white text-black mb-1">Login Toasts</div>
-            <div className="text-sm dark:text-zinc-500 text-zinc-500 mb-3">Show warnings when you aren't logged in to a service.</div>
+            <div className="text-sm dark:text-zinc-500 text-zinc-500 mb-3">Show warnings when you aren&apos;t logged in to a service.</div>
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-3">
                 <span className="text-sm font-medium dark:text-white text-black">MAL</span>
