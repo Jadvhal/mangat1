@@ -1,9 +1,10 @@
 'use client';
 
-import { Search } from 'lucide-react';
+import { Search, Sun, Moon } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useState, FormEvent, Suspense } from 'react';
+import { useState, FormEvent, Suspense, useEffect } from 'react';
 import { useSidebar } from './sidebar-context';
+import { useSettings } from '../settings-context';
 
 function SearchInput() {
   const router = useRouter();
@@ -36,6 +37,23 @@ function SearchInput() {
 
 export function Topbar() {
   const { isCollapsed } = useSidebar();
+  const { settings, updateSetting } = useSettings();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const toggleTheme = () => {
+    let currentTheme = settings.theme;
+    if (currentTheme === 'System') {
+      currentTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'Dark' : 'Light';
+    }
+    const newTheme = currentTheme === 'Dark' ? 'Light' : 'Dark';
+    updateSetting('theme', newTheme);
+  };
+
+  const isDark = mounted && (settings.theme === 'Dark' || (settings.theme === 'System' && window.matchMedia('(prefers-color-scheme: dark)').matches));
 
   return (
     <header className="h-14 dark:bg-[#0a0a0a] bg-white border-b dark:border-white/5 border-black/5 flex items-center justify-between px-6 sticky top-0 z-10 transition-colors">
@@ -44,9 +62,22 @@ export function Topbar() {
           <span className="font-medium dark:text-zinc-400 text-zinc-600 text-sm">Manga</span>
         )}
       </div>
-      <Suspense fallback={<div className="w-96 h-8 dark:bg-[#141414] bg-zinc-100 rounded-lg animate-pulse" />}>
-        <SearchInput />
-      </Suspense>
+      <div className="flex items-center gap-4">
+        <button
+          onClick={toggleTheme}
+          className="p-2 rounded-lg dark:hover:bg-white/10 hover:bg-black/5 transition-colors dark:text-zinc-400 text-zinc-600 dark:hover:text-white hover:text-black"
+          aria-label="Toggle theme"
+        >
+          {isDark ? (
+            <Sun className="w-5 h-5" />
+          ) : (
+            <Moon className="w-5 h-5" />
+          )}
+        </button>
+        <Suspense fallback={<div className="w-96 h-8 dark:bg-[#141414] bg-zinc-100 rounded-lg animate-pulse" />}>
+          <SearchInput />
+        </Suspense>
+      </div>
     </header>
   );
 }

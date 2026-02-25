@@ -24,6 +24,27 @@ export const metadata: Metadata = {
 export default function RootLayout({children}: {children: React.ReactNode}) {
   return (
     <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                let theme = localStorage.getItem('app-settings');
+                if (theme) {
+                  theme = JSON.parse(theme).theme;
+                } else {
+                  theme = 'System';
+                }
+                if (theme === 'Dark' || (theme === 'System' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                  document.documentElement.classList.add('dark');
+                } else {
+                  document.documentElement.classList.add('light');
+                }
+              } catch (e) {}
+            `,
+          }}
+        />
+      </head>
       <body className="dark:bg-[#050505] bg-zinc-50 dark:text-white text-black flex min-h-screen font-sans transition-colors" suppressHydrationWarning>
         <SettingsProvider>
           <SidebarProvider>
