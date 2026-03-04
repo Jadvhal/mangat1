@@ -122,7 +122,7 @@ export default async function MangaDetail({ params }: { params: Promise<{ id: st
             </button>
             <button className="dark:bg-white bg-black dark:hover:bg-zinc-200 hover:bg-zinc-800 dark:text-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
               <ArrowUpDown className="w-4 h-4" />
-              Sort Ascending
+              Sort Descending
             </button>
           </div>
         </div>

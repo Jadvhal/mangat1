@@ -280,14 +280,27 @@ export async function fetchMangaDetail(id: string): Promise<ApiMangaDetail> {
     const data = await res.json();
     const manga = data.data;
 
-    // Fetch chapters
-    const feedUrl = new URL(`${API_BASE_URL}/manga/${id}/feed`);
-    feedUrl.searchParams.append('translatedLanguage[]', 'en');
-    feedUrl.searchParams.append('order[chapter]', 'desc');
-    feedUrl.searchParams.append('limit', '100');
-    
-    const feedRes = await fetch(feedUrl.toString(), { cache: 'no-store' });
-    const feedData = feedRes.ok ? await feedRes.json() : { data: [] };
+    // Fetch all chapters
+    let allChapters: any[] = [];
+    let offset = 0;
+    const limit = 500;
+    let total = 0;
+
+    do {
+      const feedUrl = new URL(`${API_BASE_URL}/manga/${id}/feed`);
+      feedUrl.searchParams.append('translatedLanguage[]', 'en');
+      feedUrl.searchParams.append('order[chapter]', 'asc');
+      feedUrl.searchParams.append('limit', limit.toString());
+      feedUrl.searchParams.append('offset', offset.toString());
+      
+      const feedRes = await fetch(feedUrl.toString(), { cache: 'no-store' });
+      if (!feedRes.ok) break;
+      
+      const feedData = await feedRes.json();
+      allChapters = allChapters.concat(feedData.data);
+      total = feedData.total;
+      offset += limit;
+    } while (offset < total);
     
     const authorRel = manga.relationships.find((rel: any) => rel.type === 'author');
     const authorName = authorRel?.attributes?.name || 'Unknown Author';
@@ -305,7 +318,7 @@ export async function fetchMangaDetail(id: string): Promise<ApiMangaDetail> {
       view: 'N/A',
       genres: genres,
       description: manga.attributes.description?.en || 'No description available.',
-      chapterList: feedData.data.map((ch: any) => ({
+      chapterList: allChapters.map((ch: any) => ({
         id: ch.id,
         path: `/manga/${id}/chapter/${ch.id}`,
         name: `Chapter ${ch.attributes.chapter || '?'} ${ch.attributes.title ? `- ${ch.attributes.title}` : ''}`,
@@ -333,12 +346,26 @@ export async function fetchChapterDetail(mangaId: string, chapterId: string): Pr
     const mangaTitle = mangaRel?.attributes?.title?.en || 'Unknown Manga';
 
     // Fetch all chapters for navigation
-    const feedUrl = new URL(`${API_BASE_URL}/manga/${mangaId}/feed`);
-    feedUrl.searchParams.append('translatedLanguage[]', 'en');
-    feedUrl.searchParams.append('order[chapter]', 'desc');
-    feedUrl.searchParams.append('limit', '500');
-    const feedRes = await fetch(feedUrl.toString(), { cache: 'no-store' });
-    const feedData = feedRes.ok ? await feedRes.json() : { data: [] };
+    let allChapters: any[] = [];
+    let offset = 0;
+    const limit = 500;
+    let total = 0;
+
+    do {
+      const feedUrl = new URL(`${API_BASE_URL}/manga/${mangaId}/feed`);
+      feedUrl.searchParams.append('translatedLanguage[]', 'en');
+      feedUrl.searchParams.append('order[chapter]', 'asc');
+      feedUrl.searchParams.append('limit', limit.toString());
+      feedUrl.searchParams.append('offset', offset.toString());
+      
+      const feedRes = await fetch(feedUrl.toString(), { cache: 'no-store' });
+      if (!feedRes.ok) break;
+      
+      const feedData = await feedRes.json();
+      allChapters = allChapters.concat(feedData.data);
+      total = feedData.total;
+      offset += limit;
+    } while (offset < total);
 
     // Fetch images
     const serverUrl = new URL(`${API_BASE_URL}/at-home/server/${chapterId}`);
@@ -356,7 +383,7 @@ export async function fetchChapterDetail(mangaId: string, chapterId: string): Pr
     return {
       title: mangaTitle,
       currentChapter: `Chapter ${chapter.attributes.chapter || '?'} ${chapter.attributes.title ? `- ${chapter.attributes.title}` : ''}`,
-      chapterListIds: feedData.data.map((ch: any) => ({
+      chapterListIds: allChapters.map((ch: any) => ({
         id: ch.id,
         name: `Chapter ${ch.attributes.chapter || '?'}`
       })),
