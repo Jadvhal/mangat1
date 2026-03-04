@@ -220,7 +220,7 @@ export async function fetchMangaList(params?: {
       url.searchParams.append('order[followedCount]', 'desc');
     }
 
-    const res = await fetch(url.toString(), { next: { revalidate: 3600 } });
+    const res = await fetch(url.toString(), { cache: 'no-store' });
     if (!res.ok) {
       console.warn(`Failed to fetch manga list: ${res.status} ${res.statusText}`);
       return fallbackMangaListResponse;
@@ -273,7 +273,7 @@ export async function fetchMangaDetail(id: string): Promise<ApiMangaDetail> {
     url.searchParams.append('includes[]', 'cover_art');
     url.searchParams.append('includes[]', 'author');
     
-    const res = await fetch(url.toString(), { next: { revalidate: 3600 } });
+    const res = await fetch(url.toString(), { cache: 'no-store' });
     if (!res.ok) {
       throw new Error(`Failed to fetch manga detail: ${res.status} ${res.statusText}`);
     }
@@ -286,7 +286,7 @@ export async function fetchMangaDetail(id: string): Promise<ApiMangaDetail> {
     feedUrl.searchParams.append('order[chapter]', 'desc');
     feedUrl.searchParams.append('limit', '100');
     
-    const feedRes = await fetch(feedUrl.toString(), { next: { revalidate: 3600 } });
+    const feedRes = await fetch(feedUrl.toString(), { cache: 'no-store' });
     const feedData = feedRes.ok ? await feedRes.json() : { data: [] };
     
     const authorRel = manga.relationships.find((rel: any) => rel.type === 'author');
@@ -324,7 +324,7 @@ export async function fetchChapterDetail(mangaId: string, chapterId: string): Pr
     // Fetch chapter info
     const chUrl = new URL(`${API_BASE_URL}/chapter/${chapterId}`);
     chUrl.searchParams.append('includes[]', 'manga');
-    const chRes = await fetch(chUrl.toString(), { next: { revalidate: 3600 } });
+    const chRes = await fetch(chUrl.toString(), { cache: 'no-store' });
     if (!chRes.ok) throw new Error('Failed to fetch chapter info');
     const chData = await chRes.json();
     const chapter = chData.data;
@@ -337,7 +337,7 @@ export async function fetchChapterDetail(mangaId: string, chapterId: string): Pr
     feedUrl.searchParams.append('translatedLanguage[]', 'en');
     feedUrl.searchParams.append('order[chapter]', 'desc');
     feedUrl.searchParams.append('limit', '500');
-    const feedRes = await fetch(feedUrl.toString(), { next: { revalidate: 3600 } });
+    const feedRes = await fetch(feedUrl.toString(), { cache: 'no-store' });
     const feedData = feedRes.ok ? await feedRes.json() : { data: [] };
 
     // Fetch images
@@ -380,7 +380,7 @@ export async function searchManga(query: string, page: number = 1): Promise<{ ma
     url.searchParams.append('includes[]', 'cover_art');
     url.searchParams.append('availableTranslatedLanguage[]', 'en');
 
-    const res = await fetch(url.toString(), { next: { revalidate: 3600 } });
+    const res = await fetch(url.toString(), { cache: 'no-store' });
     if (!res.ok) {
       console.warn(`Failed to search manga: ${res.status} ${res.statusText}`);
       return { mangaList: [], metaData: { totalPages: 0 } };
